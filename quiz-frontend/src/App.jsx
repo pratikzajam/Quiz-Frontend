@@ -5,16 +5,17 @@ import './App.css'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
+import  UserDashboard from './pages/UserDashboard.jsx'
+import QuizPage from './pages/QuizPage';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <Routes>
-
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-
+      <Route path="/dashboard" element={<UserDashboard />} />
+        <Route path="/quiz" element={<QuizPage />} />
     </Routes>
   )
 }

@@ -24,7 +24,7 @@ const Signup = () => {
 
         try {
 
-            let response = await axios.post("http://localhost:3000/api/signup", {
+            let response = await axios.post("https://quiz-backend-bay-chi.vercel.app/api/signup", {
                 name: form.name,
                 email: form.email,
                 confirmPassword: form.confirmPassword,

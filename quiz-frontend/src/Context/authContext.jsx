@@ -1,33 +1,49 @@
-import { createContext, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { createContext, useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
-export let AuthContext = createContext();
-
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
-    const login = (token) => {
-        setUser(token);
+  const login = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      setUser(decoded);
 
-        const decoded = jwtDecode(token);
-        localStorage.setItem("user", decoded);
+      localStorage.setItem('user', JSON.stringify(decoded)); 
+      localStorage.setItem('token', token);
 
-        if (decoded) {
-            return true
-        } else {
-            return false
-        }
+      return true;
+    } catch (error) {
+      console.error('JWT decode failed:', error);
+      return false;
     }
+  };
 
-    const logout = () => {
-        setUser(null);
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+  };
+
+ 
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      try {
+        const decoded = jwtDecode(storedToken);
+        setUser(decoded);
+      } catch (error) {
+        console.error('Token invalid or expired:', error);
+        logout();
+      }
     }
+  }, []);
 
-
-    return < AuthContext.Provider value={{ login, logout }}>
-        {children}
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
     </AuthContext.Provider>
-
-}
-
+  );
+};
